@@ -1,0 +1,41 @@
+﻿@model MemeRSity.ViewModel.ArticlesCreate
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Article</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" enctype="multipart/form-data" asp-controller="Articles" asp-action="Create">
+            <div class="form-group">
+                <div class="col-md-10">
+                    <p>Upload one or more files using this form:</p>
+                    <input type="text" name="title" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-10">
+                    <p>Upload one or more files using this form:</p>
+                    <input type="file" name="image" multiple>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-10">
+                    <input type="submit" value="Upload">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

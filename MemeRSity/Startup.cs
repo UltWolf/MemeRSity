@@ -58,7 +58,7 @@ namespace MemeRSity
                 .AddEntityFrameworkStores<ApplicationContext>()
                 .AddDefaultTokenProviders();
             services.AddAuthentication().AddCookie(); 
-
+            
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
  

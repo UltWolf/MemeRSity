@@ -7,6 +7,7 @@ namespace MemeRSity.Models
 {
     public class Comment
     {
+        public int Id { get; set; }
         public UserApp Author { get; set; }
         public DateTime Time { get; set; }
         public string Text { get; set; }

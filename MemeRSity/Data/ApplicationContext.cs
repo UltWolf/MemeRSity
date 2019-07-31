@@ -7,6 +7,11 @@ namespace MemeRSity.Data
 {
     public class ApplicationContext:IdentityDbContext<UserApp, IdentityRole, string>
     {
+        public ApplicationContext(DbContextOptions<ApplicationContext> dbContext) : base(dbContext)
+        {
+
+        }
+
         public DbSet<Article> Articles { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Comment> Comments { get; set; }

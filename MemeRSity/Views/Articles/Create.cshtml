@@ -20,12 +20,12 @@
             <div class="form-group">
                 <div class="col-md-10">
                     <p>Upload one or more files using this form:</p>
-                    <input type="file" name="image" multiple>
+                    <input type="file" name="image"  id="image" multiple>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-md-10">
-                    <input type="submit" value="Upload">
+                    <input type="submit" id="submitBtn" value="Upload">
                 </div>
             </div>
         </form>
@@ -35,7 +35,37 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
-
+<script> 
+        document.getElementById("submitBtn").addEventListener("click", function (e) {
+            e.preventDefault();
+            var fileReader = new FileReader();
+            var ajaxUrl = "/articles/create";
+            var image = document.getElementById("image").files[0];
+            var formData = new FormData();
+            formData.append("image", image);
+            var title = document.getElementsByName("title")[0].value;
+            console.log(title);
+            formData.append("title", title);
+            fileReader.readAsDataURL(image);
+            fileReader.onload = function(){
+                $.ajax({
+                type: "POST",
+                url: ajaxUrl,
+                data: formData,
+                cache: false,
+                contentType: false,
+                method:"POST",
+                processData: false,
+                    success: function (data) {
+                        console.log(data);
+                },
+                    error: function (err) {
+                        console.log(err);
+                }
+            });
+            };
+            }); 
+    </script>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

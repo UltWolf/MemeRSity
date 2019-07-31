@@ -20,7 +20,7 @@ namespace MemeRSity.ViewModel
         {
             Article article = new Article();
             article.Title = articlesCreate.Title;
-            article.Tags = article.Tags;
+            article.Tags = articlesCreate.Tags;
             using (var memoryStream = new MemoryStream())
             {
                 articlesCreate.Image.CopyTo(memoryStream);

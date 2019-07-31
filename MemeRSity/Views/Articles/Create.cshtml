@@ -24,10 +24,15 @@
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-md-10">
-                    <input type="submit" id="submitBtn" value="Upload">
-                </div>
-            </div>
+                                  <div class="col-md-10">
+                                      <input type="submit" id="submitBtn" value="Upload">
+                                  </div>
+                              </div>
+            <div class="form-group"><div id="tags"></div>
+                                                                <div class="col-md-10">
+                                                                    <input type="text" id ="tagInput" value="Upload">
+                                                                </div>
+                                                            </div>
         </form>
     </div>
 </div>
@@ -36,8 +41,29 @@
     <a asp-action="Index">Back to List</a>
 </div>
 <script> 
+var formd;
+ function RemoveFromArray(e){
+     document.getElementById("tags").removeChild(e.target);
+ }
+document.getElementById("tagInput").addEventListener("keypress", function (e) {
+    var tag = $(this).val();
+    if(tag[tag.length-1]==","){
+        var tagElement = document.createElement("div");
+        tagElement.addEventListener("click",RemoveFromArray);
+         var tagValue =tag.slice(0,tag.length-1);
+         tagElement.textContent = tagValue;
+        document.getElementById("tags").append(tagElement); 
+        $(this).val("");
+    }
+    });
+
         document.getElementById("submitBtn").addEventListener("click", function (e) {
             e.preventDefault();
+            var divs = document.getElementById("tags").getElementsByTagName("div");
+            var tags = []; 
+            for(var i =0; i<divs.length;i++){
+                tags.push(divs[i].innerText);
+            } 
             var fileReader = new FileReader();
             var ajaxUrl = "/articles/create";
             var image = document.getElementById("image").files[0];
@@ -46,15 +72,19 @@
             var title = document.getElementsByName("title")[0].value;
             console.log(title);
             formData.append("title", title);
+            for(var i=0;i<tags.length;i++){
+            formData.append("Tags["+i+"].Id", i);   
+            formData.append("Tags["+i+"].Name", tags[i]);
+            }
+            formd=formData;
+            console.log(formData);
             fileReader.readAsDataURL(image);
             fileReader.onload = function(){
                 $.ajax({
                 type: "POST",
                 url: ajaxUrl,
-                data: formData,
-                cache: false,
-                contentType: false,
-                method:"POST",
+                data: formData, 
+                contentType: false, 
                 processData: false,
                     success: function (data) {
                         console.log(data);

@@ -60,7 +60,7 @@ namespace MemeRSity.Controllers
             if (ModelState.IsValid)
             {
                 Article dbArticle = article;
-                _context.Add(article);
+                _context.Articles.Add(dbArticle);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

@@ -58,10 +58,18 @@ namespace MemeRSity.Controllers
         public async Task<IActionResult> Create(ArticlesCreate article)
         {
             if (ModelState.IsValid)
-            {
+            { 
                 Article dbArticle = article;
+                List<Tag> tags =  new List<Tag>(article.Tags); 
                 _context.Articles.Add(dbArticle);
+                _context.Tags.AddRange(tags);
                 await _context.SaveChangesAsync();
+                foreach (var tag in tags)
+                {
+                    dbArticle.Tags.Add(new ArticleTag(){ TagId = tag.Id, ArticleId = dbArticle.Id});
+                }
+                await _context.SaveChangesAsync();
+ 
                 return RedirectToAction(nameof(Index));
             }
             return View(article);

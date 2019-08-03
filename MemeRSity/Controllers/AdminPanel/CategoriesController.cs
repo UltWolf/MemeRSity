@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MemeRSity.Data;
 using MemeRSity.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MemeRSity.Controllers.AdminPanel
 {
+    [Authorize]
     public class CategoriesController : Controller
     {
         private readonly ApplicationContext _context;
@@ -25,6 +27,13 @@ namespace MemeRSity.Controllers.AdminPanel
             return View(await _context.Categories.ToListAsync());
         }
 
+        [AllowAnonymous]
+        [HttpGet("/all")]
+        public async Task<IActionResult> GetAllCategories()
+        {
+            var categories = await this._context.Categories.ToListAsync();
+            return new OkObjectResult(categories);
+        }
         // GET: Categories/Details/5
         public async Task<IActionResult> Details(int? id)
         {

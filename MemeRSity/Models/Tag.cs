@@ -9,5 +9,6 @@ namespace MemeRSity.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public List<ArticleTag> Articles { get; set; }
     }
 }

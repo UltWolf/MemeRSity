@@ -13,7 +13,7 @@ namespace MemeRSity.Models
         public UserApp Author { get; set; }
         public Category Category { get; set; }
         public List<Comment> Comments { get; set; }
-        public List<Tag> Tags { get; set; }
+        public List<ArticleTag> Tags { get; set; }
         public byte[] Img { get; set; }  
         
     }

@@ -13,7 +13,7 @@ namespace MemeRSity.ViewModel
         public int Id { get; set; }
         public string Title { get; set; } 
         public Category Category { get; set; } 
-        public List<Tag> Tags { get; set; } 
+        public List<ArticleTag> Tags { get; set; } 
         public IFormFile Image { get; set; }
 
         public static  implicit operator Article(ArticlesCreate articlesCreate)

@@ -9,7 +9,7 @@ namespace MemeRSity.Services.Seeds
     {
         public   static  IWebHost Seed(this IWebHost host)
         {       List<Task> tasksCreating = new List<Task>();
-                tasksCreating.Add(new Task(()=>DbCreating.Create(host.Services).Start()));
+                tasksCreating.Add(DbCreating.Create(host.Services));
                 Task.WaitAll(tasksCreating.ToArray());
                 
                 return host;

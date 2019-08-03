@@ -13,6 +13,7 @@ namespace MemeRSity.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<ArticleTag>()
                 .HasKey(bc => new { bc.ArticleId, bc.TagId });  
             modelBuilder.Entity<ArticleTag>()

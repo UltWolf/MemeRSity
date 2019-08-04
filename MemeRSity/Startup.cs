@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace MemeRSity
 {
@@ -59,7 +61,10 @@ namespace MemeRSity
                 .AddDefaultTokenProviders();
             services.AddAuthentication().AddCookie(); 
             
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().AddJsonOptions(options => {
+                                     options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                                 }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
  
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

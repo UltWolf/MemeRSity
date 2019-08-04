@@ -19,12 +19,9 @@ namespace MemeRSity.ViewModel
         public static  implicit operator Article(ArticlesCreate articlesCreate)
         {
             Article article = new Article();
-            article.Title = articlesCreate.Title;  
-            using (var memoryStream = new MemoryStream())
-            {
-                articlesCreate.Image.CopyTo(memoryStream);
-                article.Img = memoryStream.ToArray();
-            }
+            article.Title = articlesCreate.Title;
+            article.Category = articlesCreate.Category;
+           
             return article;
         }
     }

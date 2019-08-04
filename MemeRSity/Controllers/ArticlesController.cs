@@ -9,16 +9,19 @@ using MemeRSity.Data;
 using MemeRSity.Models;
 using MemeRSity.ViewModel;
 using System.IO;
+using Microsoft.Extensions.Hosting;
 
 namespace MemeRSity.Controllers
 {
     public class ArticlesController : Controller
     {
         private readonly ApplicationContext _context;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public ArticlesController(ApplicationContext context)
+        public ArticlesController(ApplicationContext context, IHostingEnvironment hostingEnvironment)
         {
             _context = context;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         // GET: Articles
@@ -63,6 +66,20 @@ namespace MemeRSity.Controllers
                 List<Tag> tags =  new List<Tag>(article.Tags); 
                 _context.Articles.Add(dbArticle);
                 _context.Tags.AddRange(tags);
+                await _context.SaveChangesAsync();
+                FileInfo fi = new FileInfo(article.Image.FileName);
+                var newFilename = dbArticle.Id + "_" + String.Format("{0:d}", 
+                                      (DateTime.Now.Ticks / 10) % 100000000) + fi.Extension;
+                var webPath = _hostingEnvironment.ContentRootPath+ @"\wwwroot\";
+                var path = Path.Combine("" , webPath + @"\ImageFiles\" + newFilename);
+                var pathToSave = @"/ImageFiles/" + newFilename;
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await article.Image.CopyToAsync(stream);
+                }
+ 
+                dbArticle.ImgPath = pathToSave;
+                _context.Update(dbArticle);
                 await _context.SaveChangesAsync();
                 foreach (var tag in tags)
                 {

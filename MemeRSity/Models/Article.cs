@@ -14,7 +14,7 @@ namespace MemeRSity.Models
         public Category Category { get; set; }
         public List<Comment> Comments { get; set; } = new List<Comment>();
         public List<ArticleTag> Tags { get; set; } = new List<ArticleTag>();
-        public byte[] Img { get; set; }  
+        public string ImgPath { get; set; }  
         
     }
 }

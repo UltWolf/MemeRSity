@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using MemeRSity.Data;
 using MemeRSity.Models;
+using MemeRSity.Services;
+using MemeRSity.Services.Abstracts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -63,8 +65,8 @@ namespace MemeRSity
                 })
                 .AddEntityFrameworkStores<ApplicationContext>()
                 .AddDefaultTokenProviders();
-            services.AddAuthentication().AddCookie(); 
-            
+            services.AddAuthentication().AddCookie();
+            services.AddSingleton<IArticlesRepository, ArticlesRepository>();
             services.AddMvc().AddJsonOptions(options => {
                                      options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                                      options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;

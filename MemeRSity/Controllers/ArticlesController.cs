@@ -10,6 +10,7 @@ using MemeRSity.Models;
 using MemeRSity.ViewModel;
 using System.IO;
 using Microsoft.Extensions.Hosting;
+using MemeRSity.Services;
 
 namespace MemeRSity.Controllers
 {
@@ -17,11 +18,13 @@ namespace MemeRSity.Controllers
     {
         private readonly ApplicationContext _context;
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly ArticlesRepository _repository;
 
-        public ArticlesController(ApplicationContext context, IHostingEnvironment hostingEnvironment)
+        public ArticlesController(ArticlesRepository repository, IHostingEnvironment hostingEnvironment)
         {
-            _context = context;
+            _repository = repository;
             _hostingEnvironment = hostingEnvironment;
+            
         }
 
         // GET: Articles
@@ -53,45 +56,34 @@ namespace MemeRSity.Controllers
         {
             return View();
         }
-
-        // POST: Articles/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost] 
+        
+        [HttpPost]
         public async Task<IActionResult> Create(ArticlesCreate article)
         {
             if (ModelState.IsValid)
-            { 
-                Article dbArticle = article;
-                List<Tag> tags =  new List<Tag>(article.Tags); 
-                _context.Articles.Add(dbArticle);
-                _context.Tags.AddRange(tags);
-                await _context.SaveChangesAsync();
-                FileInfo fi = new FileInfo(article.Image.FileName);
-                var newFilename = dbArticle.Id + "_" + String.Format("{0:d}", 
-                                      (DateTime.Now.Ticks / 10) % 100000000) + fi.Extension;
-                var webPath = _hostingEnvironment.ContentRootPath+ @"\wwwroot\";
-                var path = Path.Combine("" , webPath + @"\ImageFiles\" + newFilename);
-                var pathToSave = @"/ImageFiles/" + newFilename;
-                using (var stream = new FileStream(path, FileMode.Create))
-                {
-                    await article.Image.CopyToAsync(stream);
-                }
- 
-                dbArticle.ImgPath = pathToSave;
-                _context.Update(dbArticle);
-                await _context.SaveChangesAsync();
-                foreach (var tag in tags)
-                {
-                    dbArticle.Tags.Add(new ArticleTag(){ TagId = tag.Id, ArticleId = dbArticle.Id});
-                }
-                await _context.SaveChangesAsync();
- 
+            {
+
+                await CreateAtDb(article);
                 return RedirectToAction(nameof(Index));
             }
             return View(article);
         }
 
+        private async Task CreateAtDb(ArticlesCreate article)
+        {
+            if (HttpContext.User.IsInRole("Admin"))
+            {
+                article.isPublish = true;
+            }
+            await _repository.AddAsync(article);
+            
+        }
+       
+
+        // POST: Articles/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         // GET: Articles/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

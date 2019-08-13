@@ -2,6 +2,7 @@
 using MemeRSity.Models;
 using MemeRSity.Services.Abstracts;
 using MemeRSity.ViewModel;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,6 +14,7 @@ namespace MemeRSity.Services
     public class ArticlesRepository : IArticlesRepository
     {
         private readonly ApplicationContext _context;
+        private const int count = 20;
         public ArticlesRepository(ApplicationContext context)
         {
             _context = context;
@@ -39,7 +41,41 @@ namespace MemeRSity.Services
 
             await _context.SaveChangesAsync();
         }
- 
+
+        public void DeleteArticle(Article article)
+        { 
+            _context.Articles.Remove(article);
+            _context.SaveChanges();
+        }
+
+        public List<Article> GetArticles(int page)
+        {
+            return _context.Articles.Skip(page * count).Take(count).ToList();
+        }
+
+        public void UpdateArticle(Article article)
+        {
+            try
+            {
+                _context.Update(article);
+                _context.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ArticleExists(article.Id))
+                {
+                    return ;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+        private bool ArticleExists(int id)
+        {
+            return _context.Articles.Any(e => e.Id == id);
+        }
 
         private async Task<string> WriteFile(ArticlesCreate articleCreate, Article article)
         {
@@ -55,6 +91,11 @@ namespace MemeRSity.Services
             }
 
             return  pathToSave;
+        }
+
+        public Article GetArticle(int id)
+        {
+            return this._context.Articles.Find(id);
         }
     }
 }
